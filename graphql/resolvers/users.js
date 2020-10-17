@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { UserInputError } = require("apollo-server");
 
 const { SECRET_KEY } = require("../../config");
 
@@ -9,13 +10,19 @@ module.exports = {
   Mutation: {
     async register(
       _,
-      { registerInput: { username, email, password, confirmPassword } },
-      context,
-      info
+      { registerInput: { username, email, password, confirmPassword } }
     ) {
-      // Todo: validate user data
-      // Todo: make sure user doesnt already exist
-      // Todo: hash password and create an auth token
+      // TODO: validate user data
+      // TODO: make sure user doesnt already exist
+      const user = await User.findOne({ username });
+      if (user) {
+        throw new UserInputError("Username is taken", {
+          errors: {
+            username: "This username is taken",
+          },
+        });
+      }
+      // hash password and create an auth token
       password = await bcrypt.hash(password, 12);
 
       const newUser = new User({
