@@ -1,5 +1,4 @@
 module.exports = {
-  MONGODB:
-    "mongodb+srv://sogggy:z9TIfiATbi2skMXY@cluster0.jsgnt.mongodb.net/merng?retryWrites=true&w=majority",
-  SECRET_KEY: "some very secret key",
+  MONGODB: process.env.REACT_APP_MONGODB,
+  SECRET_KEY: process.env.REACT_APP_SECRET_KEY,
 };
