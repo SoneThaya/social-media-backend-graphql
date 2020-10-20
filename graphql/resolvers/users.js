@@ -17,7 +17,7 @@ function generateToken(user) {
       username: user.username,
     },
     SECRET_KEY,
-    { expiresIn: "2h" }
+    { expiresIn: "1h" }
   );
 }
 
@@ -31,6 +31,7 @@ module.exports = {
       }
 
       const user = await User.findOne({ username });
+
       if (!user) {
         errors.general = "User not found";
         throw new UserInputError("User not found", { errors });
@@ -38,8 +39,8 @@ module.exports = {
 
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        errors.general = "Wrong credentials";
-        throw new UserInputError("Wrong credentials", { errors });
+        errors.general = "Wrong crendetials";
+        throw new UserInputError("Wrong crendetials", { errors });
       }
 
       const token = generateToken(user);
@@ -54,7 +55,7 @@ module.exports = {
       _,
       { registerInput: { username, email, password, confirmPassword } }
     ) {
-      // validate user data
+      // Validate user data
       const { valid, errors } = validateRegisterInput(
         username,
         email,
@@ -64,7 +65,7 @@ module.exports = {
       if (!valid) {
         throw new UserInputError("Errors", { errors });
       }
-      // TODO: make sure user doesnt already exist
+      // TODO: Make sure user doesnt already exist
       const user = await User.findOne({ username });
       if (user) {
         throw new UserInputError("Username is taken", {

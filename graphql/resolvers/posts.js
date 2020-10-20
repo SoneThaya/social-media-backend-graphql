@@ -1,5 +1,4 @@
 const { AuthenticationError, UserInputError } = require("apollo-server");
-const { argsToArgsConfig } = require("graphql/type/definition");
 
 const Post = require("../../models/Post");
 const checkAuth = require("../../util/check-auth");
@@ -31,7 +30,7 @@ module.exports = {
     async createPost(_, { body }, context) {
       const user = checkAuth(context);
 
-      if (args.body.trim() === "") {
+      if (body.trim() === "") {
         throw new Error("Post body must not be empty");
       }
 
@@ -56,7 +55,7 @@ module.exports = {
       try {
         const post = await Post.findById(postId);
         if (user.username === post.username) {
-          await post.deleteOne();
+          await post.delete();
           return "Post deleted successfully";
         } else {
           throw new AuthenticationError("Action not allowed");
@@ -80,11 +79,10 @@ module.exports = {
             createdAt: new Date().toISOString(),
           });
         }
+
         await post.save();
         return post;
-      } else {
-        throw new UserInputError("Post not found");
-      }
+      } else throw new UserInputError("Post not found");
     },
   },
   Subscription: {
